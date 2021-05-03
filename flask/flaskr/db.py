@@ -12,6 +12,8 @@ from flask.cli import with_appcontext
 #         return self
     # def close(self):
     #     # shut the database connection
+    #   def execute(self, string):
+    #     # execute sql
     # def executescript(self, text):
     #     # let database execute the script
 

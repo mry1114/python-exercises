@@ -6,6 +6,8 @@ from werkzeug.exceptions import abort
 from flaskr.auth import login_required
 from flaskr.db import get_db
 
+import datetime
+
 bp = Blueprint('blog', __name__)
 
 @bp.route('/')
@@ -94,3 +96,19 @@ def delete(id):
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('blog.index'))
+
+@bp.route('/post/<int:id>', methods=('GET',))
+@login_required
+def detail(id):
+    """
+    sqlite3 returns a dictionary - post, including
+    (post)id, author_id, (time)created, title and body.
+    """
+    post = get_post(id)
+    date_time = post["created"]
+    date = date_time.strftime('%b %d, %Y')
+    time = date_time.strftime('%H:%M')
+    return render_template('blog/detail.html', post_detail=post, date=date, time=time)
+
+#for next time: we will add author to post detail page
+#see link: https://flask.palletsprojects.com/en/1.1.x/tutorial/next/

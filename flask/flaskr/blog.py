@@ -97,6 +97,21 @@ def delete(id):
     db.commit()
     return redirect(url_for('blog.index'))
 
+def get_author(id, check_author=True):
+    """
+    This function takes an id (author_id) as argument
+    and returns username.
+    """
+    user = get_db().execute(
+        'SELECT *'
+        ' FROM user'
+        ' WHERE id = ?',
+        (id,)
+    ).fetchone()
+    return user
+
+
+
 @bp.route('/post/<int:id>', methods=('GET',))
 @login_required
 def detail(id):
@@ -105,10 +120,10 @@ def detail(id):
     (post)id, author_id, (time)created, title and body.
     """
     post = get_post(id)
+    user = get_author(post["author_id"])
     date_time = post["created"]
     date = date_time.strftime('%b %d, %Y')
     time = date_time.strftime('%H:%M')
-    return render_template('blog/detail.html', post_detail=post, date=date, time=time)
+    return render_template('blog/detail.html', post_detail=post, date=date, time=time, author=user)
 
-#for next time: we will add author to post detail page
 #see link: https://flask.palletsprojects.com/en/1.1.x/tutorial/next/
